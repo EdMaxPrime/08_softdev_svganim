@@ -2,10 +2,10 @@ var svg, deltaX, deltaY, id;
 
 var setup = function () {
     svg = document.getElementById("max");
-    svg.addEventListener("click", connectTheDots);
-    document.getElementById("clear").addEventListener("click", clearSVG);
-    document.getElementById("shape").addEventListener("click", function() {
-        circle = !circle;
+    document.getElementById("radius").addEventListener("click", growShrink);
+    document.getElementById("bounce").addEventListener("click", bounce);
+    document.getElementById("stop").addEventListener("click", function() {
+        clearInterval(id);
     });
 };
 
@@ -52,8 +52,33 @@ var clearSVG = function() {
     while(svg.children.length > 0) {
         svg.children[0].remove();
     }
-    lastY = -1;
-    lastX = -1;
 };
+
+var growShrink = function() {
+    clearSVG();
+    svg.appendChild(makeCircle(250, 250));
+    clearInterval(id);
+    id = setInterval(function() {
+	var r = parseInt(svg.children[0].getAttribute("r"));
+	svg.children[0].setAttribute("r", r + deltaX);
+	if(r > 250) {
+	    deltaX = -1;
+	    r = 249;
+	} else if(r < 5) {
+	    deltaX = 1;
+	    r = 6;
+	}
+    }, 1000 / 20);
+    deltaX = 1;
+};
+
+var bounce = function() {
+    clearSVG();
+    svg.appendChild(makeCircle(25, 30));
+    clearInterval(id);
+    id = setInterval(function() {
+	var x = parseInt(svg.children[0].getAttribute("cx"));
+    }, 1000 / 20);
+}
 
 setup();
